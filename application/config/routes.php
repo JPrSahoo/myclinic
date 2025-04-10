@@ -62,6 +62,7 @@ $route['logout'] = 'auth/logout';
 
 // Receptionist routes
 $route['receptionist/'] = 'receptionist/dashboard';
+
 $route['receptionist/register'] = 'receptionist/register_patient';
 $route['receptionist/patients'] = 'receptionist/patient_list';
 
@@ -70,8 +71,9 @@ $route['testnotify'] = 'testnotify';
 
 // Doctor routes
 $route['doctor'] = 'doctor/dashboard';
-$route['doctor/patient/(:num)'] = 'doctor/view_patient/$1';
-$route['doctor/patient/(:num)/prescribe'] = 'doctor/prescribe/$1';
+$route['doctor/patients'] = 'doctor/all_patients';
+$route['doctor/patient/(:num)'] = 'doctor/view_patient/$1'; //Views patient with ID 
+$route['doctor/patient/(:num)/prescribe'] = 'doctor/prescribe/$1'; //Prescribes something for patient ID
 
 
 // Lab routes

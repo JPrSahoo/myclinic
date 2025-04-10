@@ -15,9 +15,10 @@ class Migration_Create_patient_tests_table extends CI_Migration {
                 'type'     => 'INT',
                 'unsigned' => TRUE,
             ],
-            'test_name' => [
-                'type'       => 'VARCHAR',
-                'constraint' => '255',
+            'test_id' => [
+                'type'       => 'INT',
+                'unsigned' => TRUE,
+                'null'     => FALSE,
             ],
             'result' => [
                 'type' => 'TEXT',
