@@ -120,6 +120,41 @@
         font-weight: bold;
     }
 
+    .box{
+        padding: 12px;
+        margin-bottom: 12px;
+        background: #f9f9f9;
+        border-radius: 8px;
+        border: 1px solid #e0e0e0;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        transition: background 0.3s ease;
+    }
+    .medicine-option .details {
+        margin-top: 10px;
+        padding-left: 15px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        align-items: center;
+    }
+    .medicine-option label {
+        font-weight: 500;
+        margin-right: 10px;
+        display: inline-block;
+    }
+    .medicine-option input[type="text"], .medicine-option select {
+        padding: 5px 8px;
+        margin: 5px 0;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        width: auto;
+        font-size: 14px;
+    }
+    .modal-options hr {
+        margin: 10px 0;
+        border: 0;
+        border-top: 1px dashed #ccc;
+    }
 
 </style>
 
@@ -154,6 +189,13 @@
         <input type="text" class="modal-trigger" data-type="medicines" placeholder="Click to select medicines" readonly>
         <input type="hidden" name="medicines_ids">
         <ol class="selected-list" data-type="medicines"></ol> -->
+
+        <label for="tests">Suggested Tests (Optional)</label>
+         <div class="textbox modal-trigger" data-type="medicines">
+            <span>Click to select medicines</span>
+            <ol class="selected-list" data-type="medicines"></ol>
+            <input type="hidden" name="medicines[]" id="selectedMedicineIds">
+         </div>
         
 
         <button type="submit">Save Prescription</button>
@@ -200,7 +242,10 @@
             activeHidden = this.parentElement.querySelector('input[type="hidden"]');
             currentType = this.dataset.type;
 
-            openModal(currentType);
+            if(currentType == "tests")
+                openModal(currentType);
+            else
+                openMedicineModal(currentType);
         });
     });
 
@@ -215,6 +260,7 @@
 
         modalData[type].forEach(item => {
             const label = document.createElement('label');
+            label.className = 'box';
             label.innerHTML = `
                 <input type="checkbox" value="${item.id}" data-name="${item.name}">
                 ${item.name}
@@ -225,6 +271,42 @@
         modal.classList.add('open');
         document.getElementById('modalOverlay').classList.add('show');
     }
+    function openMedicineModal(type) {
+        const modal = document.getElementById('genericModal');
+        const optionsContainer = document.getElementById('modalOptions');
+        const modalTitle = document.getElementById('modalTitle');
+
+        modalTitle.textContent = 'Select ' + (type.charAt(0).toUpperCase() + type.slice(1));
+        optionsContainer.innerHTML = '';
+
+        modalData[type].forEach(item => {
+            const wrapper = document.createElement('div');
+            wrapper.className = 'medicine-option box';
+            wrapper.innerHTML = `
+                <label style="display:block; margin-bottom:5px;">
+                    <input type="checkbox" value="${item.id}" data-name="${item.name}" onchange="this.closest('div').querySelector('.details').style.display = this.checked ? 'block' : 'none'">
+                    ${item.name}
+                </label>
+                <div class="details" style="margin-left: 20px; display: none;">
+                    <label>Dose: <input type="text" name="dose_${item.id}" placeholder="e.g., 500mg" style="width:100px;"></label>
+                    <label>Time: <input type="text" name="time_${item.id}" placeholder="e.g., 1-0-1" style="width:100px;"></label>
+                    <label>
+                        Food:
+                        <select name="food_${item.id}">
+                            <option value="">--</option>
+                            <option value="before">Before Food</option>
+                            <option value="after">After Food</option>
+                        </select>
+                    </label>
+                </div>
+                <hr>
+            `;
+            optionsContainer.appendChild(wrapper);
+        });
+
+        modal.classList.add('open');
+    }
+
 
     function closeModal() {
         document.getElementById('genericModal').classList.remove('open');
